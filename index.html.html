@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harf ve Kelime Oyunu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <img src="wooden_set.png" alt="Avatar" class="avatar" id="avatarImage"> <!-- Minecraft temalı avatar -->
+        <h1>Harf ve Kelime Oyunu</h1>
+        <!-- Kullanıcı adı oluşturma -->
+        <div id="usernameSection">
+            <input type="text" id="usernameInput" placeholder="Kullanıcı adını gir">
+            <button id="createUsernameBtn">Oluştur</button>
+        </div>
+        <!-- Harf seçimi ve oyuna başlama -->
+       <div id="gameStartSection" style="display: none;">
+    <p>Hangi harfleri kullanmak istediğini seç ve oyuna başla!</p>
+    <div id="letterSelection">
+        <label><input type="checkbox" value="a"> A</label>
+        <label><input type="checkbox" value="n"> N</label>
+        <label><input type="checkbox" value="e"> E</label>
+        <label><input type="checkbox" value="t"> T</label>
+        <label><input type="checkbox" value="i"> İ</label>
+        <label><input type="checkbox" value="l"> L</label>
+    </div>
+    <button id="startGameBtn">Seçilen Harflerle Başla</button>
+</div>
+<!-- Çoktan Seçmeli Seçenekler -->
+<div id="multipleChoiceSection" style="display: none;">
+    <p>Hecelerden doğru olanı seç:</p>
+    <button id="option1" class="optionButton"></button>
+    <button id="option2" class="optionButton"></button>
+    <button id="option3" class="optionButton"></button>
+    <button id="option4" class="optionButton"></button>
+</div>
+<div id="xpInfo" style="margin-top: 20px;">XP: 0 (Seviye: 1)</div>
+
+        <!-- Cevap kutusu ve butonlar -->
+        <div id="answerSection" style="display: none;"></div>
+        <!-- Oyun ilerleme durumu -->
+        <div id="xpInfo" style="margin-top: 20px;">XP: 0 (Seviye: 1)</div>
+        <!-- Canlar -->
+        <div id="hearts" class="hearts">
+            <span class="heart">❤️</span>
+            <span class="heart">❤️</span>
+            <span class="heart">❤️</span>
+            <span class="heart">❤️</span>
+            <span class="heart">❤️</span>
+        </div>
+        <!-- Mağaza ve Gelişen Avatar -->
+        <div class="store"></div>
+        <!-- Liderlik Tablosu -->
+        <div class="leaderboard"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+```
+
