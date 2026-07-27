@@ -124,9 +124,104 @@ fatura-onay/
 - Üretim ortamı için `SESSION_SECRET` ayarlayın ve HTTPS arkasında çalıştırıp
   çerez `secure` seçeneğini açın.
 
-## Sonraki Adımlar (isteğe bağlı)
+## Sunucuya Kurulum (internetten erişim)
+
+Yöneticinin telefondan onay verebilmesi için uygulamanın internete açık bir
+sunucuda ve **mutlaka HTTPS arkasında** çalışması gerekir.
+
+### 1. Oturum anahtarı üretin
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+`NODE_ENV=production` iken 32 karakterden kısa bir `SESSION_SECRET` ile uygulama
+başlamaz — bu kasıtlıdır.
+
+### 2. Çalıştırın
+
+**Docker ile:**
+
+```bash
+docker build -t fatura-onay .
+docker run -d --name fatura-onay \
+  -p 127.0.0.1:3000:3000 \
+  -e NODE_ENV=production \
+  -e SESSION_SECRET="<ürettiğiniz-anahtar>" \
+  -v /opt/fatura-onay/data:/app/data \
+  --restart unless-stopped \
+  fatura-onay
+```
+
+**Docker olmadan (systemd):** `/etc/systemd/system/fatura-onay.service`
+
+```ini
+[Unit]
+Description=Fatura Onay Sistemi
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/fatura-onay
+ExecStart=/usr/bin/node server.js
+Environment=NODE_ENV=production
+Environment=SESSION_SECRET=<ürettiğiniz-anahtar>
+Restart=always
+User=www-data
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### 3. HTTPS için ters vekil
+
+Caddy en kısa yoldur (sertifikayı otomatik alır ve yeniler):
+
+```
+fatura.sirketiniz.com.tr {
+    reverse_proxy 127.0.0.1:3000
+}
+```
+
+nginx + certbot da kullanılabilir. Uygulama `trust proxy` ayarıyla ters vekil
+arkasında doğru çalışacak şekilde yapılandırılmıştır.
+
+### 4. Günlük yedek
+
+```bash
+# crontab -e
+0 2 * * * cd /opt/fatura-onay && /usr/bin/node scripts/backup.js >> /var/log/fatura-yedek.log 2>&1
+```
+
+`npm run backup` veritabanının tutarlı bir kopyasını ve tüm fatura dosyalarını
+`backups/` altına alır, 30 günden eskileri siler. **Yedekleri sunucu dışına da
+kopyalayın ve geri yüklemeyi en az bir kez test edin.**
+
+### Kuruluma başlamadan önce yapılacaklar
+
+- [ ] `src/db.js` içindeki demo kullanıcıları gerçek kişilerle değiştirin
+- [ ] **Tüm demo şifrelerini değiştirin** (bu şifreler herkese açık bu depoda yazılıdır)
+- [ ] `SESSION_SECRET` üretin ve ortam değişkeni olarak verin
+- [ ] HTTPS'i doğrulayın (çerezler `secure` işaretlidir, HTTP üzerinden çalışmaz)
+- [ ] Yedeklemeyi kurun ve bir geri yükleme denemesi yapın
+- [ ] Sunucuda güvenlik duvarı: yalnızca 80/443 açık, 3000 dışarıya kapalı
+
+Uygulanan güvenlik önlemleri: şifreler bcrypt ile saklanır, oturumlar SQLite'ta
+tutulur (yeniden başlatmada düşmez), giriş denemeleri 15 dakikada 10 ile
+sınırlıdır, çerezler `httpOnly` + `sameSite=lax` + üretimde `secure`.
+
+## Sonraki Adımlar
+
+**Yakın vadede**
+
+- e-Fatura / e-Arşiv aktarımı: gelen faturaların Mikro'dan veya özel
+  entegratörden otomatik olarak sisteme düşmesi (bilgilerin elle girilmesi biter)
+- Yeni fatura geldiğinde e-posta bildirimi
+- Onay sonrası Mikro'ya durum yazımı
+
+**İleride**
 
 - Tutar limitine göre çok kademeli onay (müdür → direktör → CFO)
-- E-posta bildirimleri
+- Vekalet: onaylayan izindeyken yedek onaylayıcı
+- Mükerrer fatura kontrolü (aynı VKN + fatura no)
 - Excel / CSV dışa aktarım ve raporlama
 - Yönetici arayüzünden kullanıcı ve departman yönetimi

@@ -211,10 +211,14 @@ function renderList() {
   `).join('');
 
   list.querySelectorAll('.invoice-item').forEach((el) => {
-    el.addEventListener('click', () => {
+    el.addEventListener('click', async () => {
       state.selectedId = Number(el.dataset.id);
       renderList();
-      showDetail(state.selectedId);
+      await showDetail(state.selectedId);
+      // Mobilde detay panosu listenin altında kaldığı için oraya kaydır.
+      if (window.matchMedia('(max-width: 768px)').matches) {
+        $('detailPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     });
   });
 }
@@ -259,11 +263,16 @@ async function showDetail(id) {
           <div style="white-space:pre-wrap;">${esc(invoice.description)}</div>
         </div>` : ''}
 
-      <div class="preview">
-        ${isImage
-          ? `<img src="/api/invoices/${invoice.id}/file" alt="Fatura görseli">`
-          : `<iframe src="/api/invoices/${invoice.id}/file" title="Fatura PDF"></iframe>`}
-      </div>
+      ${isImage ? `
+        <div class="preview">
+          <img src="/api/invoices/${invoice.id}/file" alt="Fatura görseli">
+        </div>` : `
+        <div class="preview pdf-preview">
+          <iframe src="/api/invoices/${invoice.id}/file" title="Fatura PDF"></iframe>
+        </div>
+        <a class="open-file-mobile" href="/api/invoices/${invoice.id}/file" target="_blank" rel="noopener">
+          <button type="button">Faturayı Görüntüle (PDF)</button>
+        </a>`}
 
       <a href="/api/invoices/${invoice.id}/file?download=1" download>
         <button type="button" class="secondary">Dosyayı İndir (${esc(invoice.original_name)})</button>
