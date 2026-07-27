@@ -1,0 +1,313 @@
+:root {
+  --bg: #f1f5f9;
+  --panel: #ffffff;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --muted: #64748b;
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --green: #15803d;
+  --green-bg: #dcfce7;
+  --red: #b91c1c;
+  --red-bg: #fee2e2;
+  --amber: #b45309;
+  --amber-bg: #fef3c7;
+  --blue-bg: #dbeafe;
+  --radius: 10px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.hidden { display: none !important; }
+
+/* ---------- Giriş ekranı ---------- */
+#loginScreen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-card {
+  background: var(--panel);
+  padding: 32px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+  width: 100%;
+  max-width: 380px;
+}
+
+.login-card h1 { margin: 0 0 4px; font-size: 22px; }
+.login-card .subtitle { color: var(--muted); margin: 0 0 24px; }
+
+.demo-accounts {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.demo-accounts strong { color: var(--text); }
+
+/* ---------- Genel form ---------- */
+label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 13px; }
+
+input[type="text"], input[type="password"], input[type="number"],
+input[type="date"], input[type="file"], select, textarea {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+  color: var(--text);
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+textarea { resize: vertical; min-height: 76px; }
+
+.field { margin-bottom: 14px; }
+.field-row { display: flex; gap: 12px; }
+.field-row > .field { flex: 1; }
+
+button {
+  padding: 9px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  background: var(--primary);
+  color: #fff;
+}
+button:hover:not(:disabled) { background: var(--primary-dark); }
+button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+button.secondary { background: #e2e8f0; color: var(--text); }
+button.secondary:hover:not(:disabled) { background: #cbd5e1; }
+button.approve { background: var(--green); }
+button.approve:hover:not(:disabled) { background: #166534; }
+button.reject { background: var(--red); }
+button.reject:hover:not(:disabled) { background: #991b1b; }
+button.question { background: var(--amber); }
+button.question:hover:not(:disabled) { background: #92400e; }
+button.full { width: 100%; }
+
+.error-msg {
+  background: var(--red-bg);
+  color: var(--red);
+  padding: 9px 12px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  font-size: 13px;
+}
+
+/* ---------- Uygulama düzeni ---------- */
+header.topbar {
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+header.topbar h1 { font-size: 17px; margin: 0; }
+.user-box { display: flex; align-items: center; gap: 12px; }
+.user-box .who { text-align: right; line-height: 1.35; }
+.user-box .who .name { font-weight: 600; }
+.user-box .who .role { color: var(--muted); font-size: 12.5px; }
+
+main { padding: 20px 24px 40px; max-width: 1400px; margin: 0 auto; }
+
+.summary { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+.stat {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 18px;
+  min-width: 130px;
+  flex: 1;
+}
+.stat .n { font-size: 24px; font-weight: 700; line-height: 1.2; }
+.stat .l { color: var(--muted); font-size: 12.5px; }
+.stat.pending .n { color: var(--primary); }
+.stat.info_requested .n { color: var(--amber); }
+.stat.approved .n { color: var(--green); }
+.stat.rejected .n { color: var(--red); }
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.toolbar select, .toolbar input[type="text"] { width: auto; min-width: 170px; }
+.toolbar .spacer { flex: 1; }
+
+.layout { display: grid; grid-template-columns: minmax(340px, 1fr) 1.35fr; gap: 18px; align-items: start; }
+@media (max-width: 1000px) { .layout { grid-template-columns: 1fr; } }
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.panel-head {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.panel-body { padding: 16px; }
+
+/* ---------- Fatura listesi ---------- */
+.invoice-list { max-height: 70vh; overflow-y: auto; }
+.invoice-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.invoice-item:hover { background: #f8fafc; }
+.invoice-item.active { background: var(--blue-bg); }
+.invoice-item .no { font-weight: 700; }
+.invoice-item .meta { color: var(--muted); font-size: 12.5px; margin-top: 3px; }
+.invoice-item .right { text-align: right; white-space: nowrap; }
+.invoice-item .amount { font-weight: 700; margin-bottom: 5px; }
+
+.empty { padding: 34px 16px; text-align: center; color: var(--muted); }
+
+.badge {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.badge.pending { background: var(--blue-bg); color: var(--primary-dark); }
+.badge.approved { background: var(--green-bg); color: var(--green); }
+.badge.rejected { background: var(--red-bg); color: var(--red); }
+.badge.info_requested { background: var(--amber-bg); color: var(--amber); }
+
+/* ---------- Detay ---------- */
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px 18px;
+  margin-bottom: 18px;
+}
+.detail-grid .k { color: var(--muted); font-size: 12px; margin-bottom: 2px; }
+.detail-grid .v { font-weight: 600; }
+
+.preview {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 18px;
+  background: #f8fafc;
+}
+.preview iframe { width: 100%; height: 520px; border: none; display: block; }
+.preview img { width: 100%; display: block; }
+
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+
+/* ---------- Zaman çizelgesi ---------- */
+.timeline { list-style: none; padding: 0; margin: 0; }
+.timeline li {
+  padding: 10px 0 10px 16px;
+  border-left: 2px solid var(--border);
+  position: relative;
+}
+.timeline li::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 15px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.timeline li.approved::before { background: var(--green); }
+.timeline li.rejected::before { background: var(--red); }
+.timeline li.question::before { background: var(--amber); }
+.timeline li.answer::before { background: var(--primary); }
+.timeline .head { font-weight: 600; }
+.timeline .when { color: var(--muted); font-size: 12px; }
+.timeline .comment {
+  margin-top: 5px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  white-space: pre-wrap;
+}
+
+/* ---------- Modal ---------- */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 50;
+  overflow-y: auto;
+}
+.modal {
+  background: var(--panel);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-head {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal-head h2 { margin: 0; font-size: 17px; }
+.modal-body { padding: 20px; }
+.modal-foot {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.close-x { background: none; color: var(--muted); font-size: 22px; padding: 0 6px; line-height: 1; }
+.close-x:hover { background: none; color: var(--text); }
+
+.hint { color: var(--muted); font-size: 12.5px; margin-top: 5px; }

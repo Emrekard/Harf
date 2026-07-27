@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fatura Onay Sistemi</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232563eb'/%3E%3Cpath d='M9 17l5 5 9-11' stroke='white' stroke-width='3.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ================= Giriş ekranı ================= -->
+  <div id="loginScreen">
+    <form class="login-card" id="loginForm">
+      <h1>Fatura Onay Sistemi</h1>
+      <p class="subtitle">Devam etmek için giriş yapın</p>
+
+      <div id="loginError" class="error-msg hidden"></div>
+
+      <div class="field">
+        <label for="username">Kullanıcı Adı</label>
+        <input type="text" id="username" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="password">Şifre</label>
+        <input type="password" id="password" autocomplete="current-password" required>
+      </div>
+
+      <button type="submit" class="full" id="loginBtn">Giriş Yap</button>
+
+      <div class="demo-accounts">
+        <strong>Demo hesapları</strong><br>
+        Muhasebe: <strong>muhasebe</strong> / muhasebe123<br>
+        Satın Alma Müdürü: <strong>satinalma</strong> / onay123<br>
+        Üretim Müdürü: <strong>uretim</strong> / onay123<br>
+        BT Müdürü: <strong>bt</strong> / onay123<br>
+        Yönetici: <strong>admin</strong> / admin123
+      </div>
+    </form>
+  </div>
+
+  <!-- ================= Uygulama ================= -->
+  <div id="appScreen" class="hidden">
+    <header class="topbar">
+      <h1>Fatura Onay Sistemi</h1>
+      <div class="user-box">
+        <div class="who">
+          <div class="name" id="userName"></div>
+          <div class="role" id="userRole"></div>
+        </div>
+        <button class="secondary" id="logoutBtn">Çıkış</button>
+      </div>
+    </header>
+
+    <main>
+      <div class="summary" id="summary"></div>
+
+      <div class="toolbar">
+        <select id="statusFilter">
+          <option value="all">Tüm durumlar</option>
+          <option value="pending">Onay Bekliyor</option>
+          <option value="info_requested">Bilgi Bekleniyor</option>
+          <option value="approved">Onaylandı</option>
+          <option value="rejected">Reddedildi</option>
+        </select>
+        <select id="deptFilter" class="hidden"><option value="">Tüm departmanlar</option></select>
+        <input type="text" id="searchInput" placeholder="Fatura no / tedarikçi ara...">
+        <div class="spacer"></div>
+        <button id="uploadOpenBtn" class="hidden">+ Yeni Fatura Yükle</button>
+      </div>
+
+      <div class="layout">
+        <section class="panel">
+          <div class="panel-head">
+            <span>Faturalar</span>
+            <span id="listCount" class="role"></span>
+          </div>
+          <div class="invoice-list" id="invoiceList"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><span>Fatura Detayı</span></div>
+          <div class="panel-body" id="detailPanel">
+            <div class="empty">Detayları görmek için soldaki listeden bir fatura seçin.</div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- ================= Yükleme modalı ================= -->
+  <div class="modal-backdrop hidden" id="uploadModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h2>Yeni Fatura Yükle</h2>
+        <button class="close-x" data-close="uploadModal">&times;</button>
+      </div>
+      <form id="uploadForm">
+        <div class="modal-body">
+          <div id="uploadError" class="error-msg hidden"></div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="invoiceNo">Fatura No *</label>
+              <input type="text" id="invoiceNo" required>
+            </div>
+            <div class="field">
+              <label for="invoiceDate">Fatura Tarihi</label>
+              <input type="date" id="invoiceDate">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="supplier">Tedarikçi *</label>
+            <input type="text" id="supplier" required>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="amount">Tutar *</label>
+              <input type="number" id="amount" step="0.01" min="0.01" required>
+            </div>
+            <div class="field">
+              <label for="currency">Para Birimi</label>
+              <select id="currency">
+                <option value="TRY">TRY</option>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="departmentSelect">Onaylayacak Departman *</label>
+            <select id="departmentSelect" required></select>
+            <div class="hint">Fatura, seçilen departmanın müdürüne onaya gider.</div>
+          </div>
+
+          <div class="field">
+            <label for="description">Açıklama</label>
+            <textarea id="description" placeholder="Satın alma gerekçesi, sipariş no vb."></textarea>
+          </div>
+
+          <div class="field">
+            <label for="fileInput">Fatura Dosyası (PDF / JPEG / PNG) *</label>
+            <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required>
+            <div class="hint">En fazla 15 MB.</div>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="secondary" data-close="uploadModal">İptal</button>
+          <button type="submit" id="uploadSubmitBtn">Yükle ve Onaya Gönder</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= Yorum/karar modalı ================= -->
+  <div class="modal-backdrop hidden" id="commentModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h2 id="commentTitle"></h2>
+        <button class="close-x" data-close="commentModal">&times;</button>
+      </div>
+      <form id="commentForm">
+        <div class="modal-body">
+          <div id="commentError" class="error-msg hidden"></div>
+          <div class="field">
+            <label for="commentText" id="commentLabel">Açıklama</label>
+            <textarea id="commentText"></textarea>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="secondary" data-close="commentModal">İptal</button>
+          <button type="submit" id="commentSubmitBtn">Gönder</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
